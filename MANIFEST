@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+ppport.h
+README
+XS.xs
+t/Data-AMQP-XS.t
+lib/Data/AMQP/XS.pm
