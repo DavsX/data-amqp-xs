@@ -1,19 +1,31 @@
-use 5.020001;
+use strict;
+use warnings;
+use 5.010;
+
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
+use Config;
+use FindBin qw($Bin);
+
+my $ofiles = '';
+for ( <$Bin/*.c> ) {
+    $_ =~ s/.c$/.o/;
+    $ofiles .= "$_ ";
+}
+
 WriteMakefile(
-    NAME              => 'Data::AMQP::XS',
-    VERSION_FROM      => 'lib/Data/AMQP/XS.pm', # finds $VERSION, requires EU::MM from perl >= 5.5
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
-    ABSTRACT_FROM     => 'lib/Data/AMQP/XS.pm', # retrieve abstract from module
-    AUTHOR            => 'A. U. Thor <davs@nonet>',
-    #LICENSE           => 'perl',
-    #Value must be from legacy list of licenses here
-    #http://search.cpan.org/perldoc?Module%3A%3ABuild%3A%3AAPI
-    LIBS              => [''], # e.g., '-lm'
-    DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
-    INC               => '-I.', # e.g., '-I. -I/usr/include/other'
-	# Un-comment this if you add C files to link with later:
-    # OBJECT            => '$(O_FILES)', # link all the C files too
+    NAME          => 'Data::AMQP::XS',
+    VERSION_FROM  => 'lib/Data/AMQP/XS.pm',
+    ABSTRACT_FROM => 'lib/Data/AMQP/XS.pm',
+    AUTHOR        => 'David Kovacs <davs@cpan.org>',
+    OPTIMIZE      => $ENV{'OPTIMIZE'},
+    LIBS          => [''],
+
+    CCFLAGS         => "$Config{ccflags} -I${Bin}",
+
+    OBJECT        => "XS.o $ofiles",
+    DEFINE        => "-DAMQ_PLATFORM='\"Perl_$^O_$^V\"'",
+    INC           => '-I.',
+    PREREQ_PM     => {
+        'Math::Int64' => 0.34,
+    },
 );
