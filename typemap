@@ -1,5 +1,6 @@
 TYPEMAP
 Data::AMQP::XS T_PTROBJ
+
 int64_t     T_INT64
 uint64_t    T_UINT64
 
