@@ -8,6 +8,7 @@
 
 typedef struct {
     int num;
+    char leak[4096];
 } Data__AMQP__XS_t;
 
 typedef Data__AMQP__XS_t* Data__AMQP__XS;
@@ -34,10 +35,24 @@ data_amqp_xs_new(class, num)
     OUTPUT:
         RETVAL
 
+void
+data_amqp_xs_DESTROY(self)
+    Data::AMQP::XS self
+    CODE:
+        free(self);
+
 SV*
 data_amqp_xs_get_num(self)
     Data::AMQP::XS self
     CODE:
         RETVAL = newSViv(self->num);
+    OUTPUT:
+        RETVAL
+
+SV*
+data_amqp_xs_amqp_version(...)
+    CODE:
+        const char* version = amqp_version();
+        RETVAL = newSVpv(version, strlen(version));
     OUTPUT:
         RETVAL
